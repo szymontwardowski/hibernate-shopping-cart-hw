@@ -2,54 +2,56 @@ package mate.academy;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import mate.academy.exception.RegistrationException; // Ważne!
+import mate.academy.lib.Injector;
 import mate.academy.model.CinemaHall;
 import mate.academy.model.Movie;
 import mate.academy.model.MovieSession;
+import mate.academy.model.User;
+import mate.academy.security.AuthenticationService; // Sprawdź czy masz folder 'security'
 import mate.academy.service.CinemaHallService;
 import mate.academy.service.MovieService;
 import mate.academy.service.MovieSessionService;
+import mate.academy.service.ShoppingCartService;
 
 public class Main {
-    public static void main(String[] args) {
-        MovieService movieService = null;
+    private static final Injector injector = Injector.getInstance("mate.academy");
+
+    public static void main(String[] args) throws Exception {
+        MovieService movieService = (MovieService) injector.getInstance(MovieService.class);
+        CinemaHallService cinemaHallService =
+                (CinemaHallService) injector.getInstance(CinemaHallService.class);
+        MovieSessionService movieSessionService =
+                (MovieSessionService) injector.getInstance(MovieSessionService.class);
+
+        AuthenticationService authenticationService =
+                (AuthenticationService) injector.getInstance(AuthenticationService.class);
+
+        ShoppingCartService shoppingCartService =
+                (ShoppingCartService) injector.getInstance(ShoppingCartService.class);
 
         Movie fastAndFurious = new Movie("Fast and Furious");
-        fastAndFurious.setDescription("An action film about street racing, heists, and spies.");
+        fastAndFurious.setDescription("An action film.");
         movieService.add(fastAndFurious);
-        System.out.println(movieService.get(fastAndFurious.getId()));
-        movieService.getAll().forEach(System.out::println);
 
-        CinemaHall firstCinemaHall = new CinemaHall();
-        firstCinemaHall.setCapacity(100);
-        firstCinemaHall.setDescription("first hall with capacity 100");
+        CinemaHall hall = new CinemaHall();
+        hall.setCapacity(100);
+        hall.setDescription("Main Hall");
+        cinemaHallService.add(hall);
 
-        CinemaHall secondCinemaHall = new CinemaHall();
-        secondCinemaHall.setCapacity(200);
-        secondCinemaHall.setDescription("second hall with capacity 200");
+        MovieSession session = new MovieSession();
+        session.setCinemaHall(hall);
+        session.setMovie(fastAndFurious);
+        session.setShowTime(LocalDateTime.now().plusDays(1));
+        movieSessionService.add(session);
 
-        CinemaHallService cinemaHallService = null;
-        cinemaHallService.add(firstCinemaHall);
-        cinemaHallService.add(secondCinemaHall);
+        User user = authenticationService.register("bob@gmail.com", "123456");
 
-        System.out.println(cinemaHallService.getAll());
-        System.out.println(cinemaHallService.get(firstCinemaHall.getId()));
+        shoppingCartService.addSession(session, user);
 
-        MovieSession tomorrowMovieSession = new MovieSession();
-        tomorrowMovieSession.setCinemaHall(firstCinemaHall);
-        tomorrowMovieSession.setMovie(fastAndFurious);
-        tomorrowMovieSession.setShowTime(LocalDateTime.now().plusDays(1L));
+        System.out.println("Cart after adding session: " + shoppingCartService.getByUser(user));
 
-        MovieSession yesterdayMovieSession = new MovieSession();
-        yesterdayMovieSession.setCinemaHall(firstCinemaHall);
-        yesterdayMovieSession.setMovie(fastAndFurious);
-        yesterdayMovieSession.setShowTime(LocalDateTime.now().minusDays(1L));
-
-        MovieSessionService movieSessionService = null;
-        movieSessionService.add(tomorrowMovieSession);
-        movieSessionService.add(yesterdayMovieSession);
-
-        System.out.println(movieSessionService.get(yesterdayMovieSession.getId()));
-        System.out.println(movieSessionService.findAvailableSessions(
-                fastAndFurious.getId(), LocalDate.now()));
+        shoppingCartService.clear(shoppingCartService.getByUser(user));
+        System.out.println("Cart after clear: " + shoppingCartService.getByUser(user));
     }
 }
