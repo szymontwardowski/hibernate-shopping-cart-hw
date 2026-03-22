@@ -16,19 +16,16 @@ public class Main {
     private static final Injector injector = Injector.getInstance("mate.academy");
 
     public static void main(String[] args) throws Exception {
-        MovieService movieService = (MovieService)
-                injector.getInstance(MovieService.class);
+        MovieService movieService = (MovieService) injector.getInstance(MovieService.class);
         Movie movie = new Movie("Fast and Furious");
         movie.setDescription("Action");
         movieService.add(movie);
-
         CinemaHallService cinemaHallService = (CinemaHallService)
                 injector.getInstance(CinemaHallService.class);
         CinemaHall hall = new CinemaHall();
         hall.setCapacity(100);
         hall.setDescription("Main Hall");
         cinemaHallService.add(hall);
-
         MovieSessionService movieSessionService = (MovieSessionService)
                 injector.getInstance(MovieSessionService.class);
         MovieSession session = new MovieSession();
@@ -36,15 +33,12 @@ public class Main {
         session.setMovie(movie);
         session.setShowTime(LocalDateTime.now().plusDays(1));
         movieSessionService.add(session);
-
         AuthenticationService authenticationService = (AuthenticationService)
                 injector.getInstance(AuthenticationService.class);
         User user = authenticationService.register("bob@gmail.com", "123456");
-
         ShoppingCartService shoppingCartService = (ShoppingCartService)
                 injector.getInstance(ShoppingCartService.class);
         shoppingCartService.addSession(session, user);
-
         System.out.println(shoppingCartService.getByUser(user));
         shoppingCartService.clear(shoppingCartService.getByUser(user));
         System.out.println(shoppingCartService.getByUser(user));
