@@ -17,36 +17,34 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         MovieService movieService = (MovieService) injector.getInstance(MovieService.class);
-        Movie fastAndFurious = new Movie("Fast and Furious");
-        fastAndFurious.setDescription("An action film.");
-        movieService.add(fastAndFurious);
+        Movie movie = new Movie("Fast and Furious");
+        movie.setDescription("Action");
+        movieService.add(movie);
 
-        CinemaHallService cinemaHallService =
-                (CinemaHallService) injector.getInstance(CinemaHallService.class);
+        CinemaHallService cinemaHallService = (CinemaHallService) injector.getInstance(CinemaHallService.class);
         CinemaHall hall = new CinemaHall();
         hall.setCapacity(100);
         hall.setDescription("Main Hall");
         cinemaHallService.add(hall);
 
-        MovieSessionService movieSessionService =
-                (MovieSessionService) injector.getInstance(MovieSessionService.class);
+        MovieSessionService movieSessionService = (MovieSessionService)
+                injector.getInstance(MovieSessionService.class);
         MovieSession session = new MovieSession();
         session.setCinemaHall(hall);
-        session.setMovie(fastAndFurious);
+        session.setMovie(movie);
         session.setShowTime(LocalDateTime.now().plusDays(1));
         movieSessionService.add(session);
 
-        AuthenticationService authenticationService =
-                (AuthenticationService) injector.getInstance(AuthenticationService.class);
+        AuthenticationService authenticationService = (AuthenticationService)
+                injector.getInstance(AuthenticationService.class);
         User user = authenticationService.register("bob@gmail.com", "123456");
 
-        ShoppingCartService shoppingCartService =
-                (ShoppingCartService) injector.getInstance(ShoppingCartService.class);
+        ShoppingCartService shoppingCartService = (ShoppingCartService)
+                injector.getInstance(ShoppingCartService.class);
         shoppingCartService.addSession(session, user);
 
-        System.out.println("Cart after adding session: " + shoppingCartService.getByUser(user));
-
+        System.out.println(shoppingCartService.getByUser(user));
         shoppingCartService.clear(shoppingCartService.getByUser(user));
-        System.out.println("Cart after clear: " + shoppingCartService.getByUser(user));
+        System.out.println(shoppingCartService.getByUser(user));
     }
 }
