@@ -20,27 +20,25 @@ public class Main {
         Movie movie = new Movie("Fast and Furious");
         movie.setDescription("Action");
         movieService.add(movie);
-        CinemaHallService cinemaHallService = (CinemaHallService)
+        CinemaHallService hallService = (CinemaHallService)
                 injector.getInstance(CinemaHallService.class);
         CinemaHall hall = new CinemaHall();
         hall.setCapacity(100);
         hall.setDescription("Main Hall");
-        cinemaHallService.add(hall);
-        MovieSessionService movieSessionService = (MovieSessionService)
-                injector.getInstance(MovieSessionService.class);
+        hallService.add(hall);
         MovieSession session = new MovieSession();
         session.setCinemaHall(hall);
         session.setMovie(movie);
         session.setShowTime(LocalDateTime.now().plusDays(1));
-        movieSessionService.add(session);
-        AuthenticationService authenticationService = (AuthenticationService)
+        ((MovieSessionService) injector.getInstance(MovieSessionService.class)).add(session);
+        AuthenticationService authService = (AuthenticationService)
                 injector.getInstance(AuthenticationService.class);
-        User user = authenticationService.register("bob@gmail.com", "123456");
-        ShoppingCartService shoppingCartService = (ShoppingCartService)
+        User user = authService.register("bob@gmail.com", "123456");
+        ShoppingCartService cartService = (ShoppingCartService)
                 injector.getInstance(ShoppingCartService.class);
-        shoppingCartService.addSession(session, user);
-        System.out.println(shoppingCartService.getByUser(user));
-        shoppingCartService.clear(shoppingCartService.getByUser(user));
-        System.out.println(shoppingCartService.getByUser(user));
+        cartService.addSession(session, user);
+        System.out.println(cartService.getByUser(user));
+        cartService.clear(cartService.getByUser(user));
+        System.out.println(cartService.getByUser(user));
     }
 }
