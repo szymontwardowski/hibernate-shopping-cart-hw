@@ -16,12 +16,14 @@ public class Main {
     private static final Injector injector = Injector.getInstance("mate.academy");
 
     public static void main(String[] args) throws Exception {
-        MovieService movieService = (MovieService) injector.getInstance(MovieService.class);
+        MovieService movieService = (MovieService)
+                injector.getInstance(MovieService.class);
         Movie movie = new Movie("Fast and Furious");
         movie.setDescription("Action");
         movieService.add(movie);
 
-        CinemaHallService cinemaHallService = (CinemaHallService) injector.getInstance(CinemaHallService.class);
+        CinemaHallService cinemaHallService = (CinemaHallService)
+                injector.getInstance(CinemaHallService.class);
         CinemaHall hall = new CinemaHall();
         hall.setCapacity(100);
         hall.setDescription("Main Hall");
