@@ -1,7 +1,6 @@
 package mate.academy.service.impl;
 
-import mate.academy.exception.AuthenticationException;
-import mate.academy.exception.RegistrationException; // Dodaj ten import
+import mate.academy.exception.RegistrationException;
 import mate.academy.lib.Inject;
 import mate.academy.lib.Service;
 import mate.academy.model.User;
@@ -17,19 +16,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private ShoppingCartService shoppingCartService;
 
     @Override
-    public User login(String email, String password) throws AuthenticationException {
+    public User login(String email, String password) {
         return null;
     }
 
     @Override
-    public User register(String email, String password) throws RegistrationException { // Dodano throws
+    public User register(String email, String password) throws RegistrationException {
         User user = new User();
         user.setEmail(email);
         user.setPassword(password);
         userService.add(user);
-
         shoppingCartService.registerNewShoppingCart(user);
-
         return user;
     }
 }

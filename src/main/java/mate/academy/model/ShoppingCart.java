@@ -11,7 +11,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "shopping_carts")
-public class ShoppingCart { // DODANO public
+public class ShoppingCart {
     @Id
     private Long id;
 
